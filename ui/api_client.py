@@ -15,7 +15,8 @@ import os
 import urllib.error
 import urllib.request
 
-API_BASE_URL = os.environ.get("SAFECLICK_API_BASE_URL", "http://127.0.0.1:8000")
+# Environment variable takes precedence; default points to the live Render backend.
+API_BASE_URL = os.environ.get("API_BASE_URL", "https://safeclick-backend-82ii.onrender.com")
 
 # Client-side input bound, mirroring the backend per-field limit.
 MAX_INPUT_CHARS = 10_000

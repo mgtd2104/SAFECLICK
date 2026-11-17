@@ -473,3 +473,21 @@ import/cache ambiguity, the rendering logic was moved directly into `streamlit_a
 Pasting a message or URL successfully displays the analysis breakdown (risk score badge,
 threat family indicators with gray badges, evidence, explanations, contribution, and
 prioritized recommendations) inside the assistant chat bubble without crashing.
+
+## 2026-11-17 — Update: `api_client.py` Points to Live Render Backend
+
+**Goal:** Update the default API base URL to the production Render deployment.
+
+**Changed:**
+- `ui/api_client.py` — line 18/19:
+  - Environment variable renamed from `SAFECLICK_API_BASE_URL` to `API_BASE_URL`
+  - Default fallback changed from `http://127.0.0.1:8000` to `https://safeclick-backend-82ii.onrender.com`
+  - Local development still works by setting `API_BASE_URL=http://127.0.0.1:8000` in the environment or `.env`
+
+**Verification:**
+- `python -m pytest tests -q` → **77 passed**, 2 warnings (pre-existing `starlette`/`httpx` deprecations)
+- All tests pass because they monkeypatch `api_client.analyze` at the module level; the
+  actual URL is never hit during the test suite.
+
+**Result:** The UI now defaults to the live Render backend. Developers can override via
+`API_BASE_URL` for local development or staging environments.
