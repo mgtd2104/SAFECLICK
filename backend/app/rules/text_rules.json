@@ -1,0 +1,197 @@
+[
+  {
+    "id": "text.urgency",
+    "title": "Urgency pressure",
+    "family": "Phishing",
+    "contribution": 20,
+    "evidence": "The message pushes the reader to act within a short deadline.",
+    "explanation": "Scammers create time pressure so people act before verifying.",
+    "patterns": [
+      "\\burgent\\b",
+      "\\bimmediately\\b",
+      "\\bact now\\b",
+      "\\bwithin \\d+ (?:hours|minutes|days)\\b",
+      "\\b(?:last|final) (?:warning|notice|chance)\\b",
+      "\\bexpir(?:e|es|ing)\\b",
+      "\\bsuspend(?:ed|ing)?\\b"
+    ]
+  },
+  {
+    "id": "text.generic_greeting",
+    "title": "Generic greeting",
+    "family": "Phishing",
+    "contribution": 18,
+    "evidence": "The message opens with a non-specific greeting.",
+    "explanation": "Legitimate organisations usually address you by name.",
+    "patterns": [
+      "\\bdear (?:customer|user|client|member|sir|madam)\\b",
+      "\\bvalued customer\\b",
+      "\\battention (?:user|customer)\\b"
+    ]
+  },
+  {
+    "id": "text.authority",
+    "title": "Authority impersonation",
+    "family": "Phishing",
+    "contribution": 20,
+    "evidence": "The message claims to come from a bank, a government body, or an official agency.",
+    "explanation": "Impersonating an authority makes the request feel official.",
+    "patterns": [
+      "\\b(?:income tax|it) department\\b",
+      "\\bcyber ?(?:cell|crime|police)\\b",
+      "\\bcbi\\b",
+      "\\benforcement directorate\\b",
+      "\\bnarcotics\\b",
+      "\\bcustoms\\b",
+      "\\brbi\\b",
+      "\\bgovernment of india\\b",
+      "\\bpolice\\b",
+      "\\byour bank\\b"
+    ]
+  },
+  {
+    "id": "text.credential_request",
+    "title": "Credential or KYC request",
+    "family": "Phishing",
+    "contribution": 20,
+    "evidence": "The message asks for credentials, identity details, or a KYC update.",
+    "explanation": "No legitimate organisation asks for OTPs, PINs, passwords, or full identity data by message.",
+    "patterns": [
+      "\\botp\\b",
+      "\\bpin\\b",
+      "\\bpassword\\b",
+      "\\bcvv\\b",
+      "\\bkyc\\b",
+      "\\baadhaar\\b",
+      "\\bpan (?:card|number)\\b",
+      "\\bnet ?banking (?:id|password)\\b",
+      "\\bverify your (?:account|identity|details)\\b",
+      "\\bupdate your kyc\\b",
+      "\\bshare your (?:otp|pin|password|card)\\b"
+    ]
+  },
+  {
+    "id": "text.payment_channel",
+    "title": "Unusual payment request",
+    "family": "Phishing",
+    "contribution": 22,
+    "evidence": "The message asks for payment through an unusual or untraceable method.",
+    "explanation": "Untraceable payment demands such as gift cards or crypto are a common fraud pattern.",
+    "patterns": [
+      "\\bgift ?cards?\\b",
+      "\\bbitcoin\\b",
+      "\\bcrypto ?currency\\b",
+      "\\busdt\\b",
+      "\\bwestern union\\b",
+      "\\bwire transfer\\b",
+      "\\bgoogle play (?:card|code)\\b",
+      "\\bitunes (?:card|gift)\\b",
+      "\\bamazon gift\\b"
+    ]
+  },
+  {
+    "id": "text.prize_bait",
+    "title": "Prize or reward bait",
+    "family": "Phishing",
+    "contribution": 18,
+    "evidence": "The message claims the reader has won a prize, lottery, refund, or reward.",
+    "explanation": "Unexpected winnings are used to bait people into paying a fee or sharing details.",
+    "patterns": [
+      "\\byou (?:have |'ve )?won\\b",
+      "\\blottery\\b",
+      "\\bprize\\b",
+      "\\breward\\b",
+      "\\bcashback\\b",
+      "\\bclaim your\\b",
+      "\\bcongratulations\\b",
+      "\\blucky (?:winner|draw)\\b"
+    ]
+  },
+  {
+    "id": "text.case_claim",
+    "title": "Case or FIR claim",
+    "family": "Digital arrest",
+    "contribution": 25,
+    "evidence": "The message claims a case, FIR, or legal action has been filed against the reader.",
+    "explanation": "Real agencies do not demand payment over a message or call.",
+    "patterns": [
+      "\\bfir\\b",
+      "\\bcase (?:has been |is )?(?:filed|registered)\\b",
+      "\\blegal action\\b",
+      "\\barrest warrant\\b",
+      "\\bnarcotics? (?:case|found)\\b",
+      "\\bcourt notice\\b",
+      "\\bsummons\\b",
+      "\\bnon[- ]?bailable\\b",
+      "\\bcriminal (?:case|proceedings)\\b"
+    ]
+  },
+  {
+    "id": "text.secrecy",
+    "title": "Secrecy demand",
+    "family": "Digital arrest",
+    "contribution": 20,
+    "evidence": "The message tells the reader not to discuss it with anyone.",
+    "explanation": "Isolation prevents victims from getting a second opinion.",
+    "patterns": [
+      "\\bdo not (?:tell|inform|discuss|share) (?:anyone|anybody|others)\\b",
+      "\\bdon't tell anyone\\b",
+      "\\bkeep (?:this|it) (?:confidential|secret)\\b",
+      "\\bdo not disclose\\b",
+      "\\bmaintain secrecy\\b"
+    ]
+  },
+  {
+    "id": "text.stay_on_call",
+    "title": "Pressure to stay on the line",
+    "family": "Digital arrest",
+    "contribution": 18,
+    "evidence": "The message insists the reader stay on a call or chat without disconnecting.",
+    "explanation": "Keeping the victim engaged blocks independent verification.",
+    "patterns": [
+      "\\bstay on (?:the )?(?:call|line|video)\\b",
+      "\\bdo not (?:disconnect|hang up|end the call)\\b",
+      "\\bkeep (?:the )?(?:call|line|video) (?:on|connected|active)\\b",
+      "\\bremain on (?:the )?(?:call|line)\\b",
+      "\\bdon't hang up\\b"
+    ]
+  },
+  {
+    "id": "text.verification_fee",
+    "title": "Verification-fee demand",
+    "family": "Digital arrest",
+    "contribution": 25,
+    "evidence": "The message demands a fee to 'verify', 'clear', or 'settle' the reader's case.",
+    "explanation": "Any demand to pay to avoid arrest or clear your name is a scam.",
+    "patterns": [
+      "\\bverification fee\\b",
+      "\\bprocessing fee\\b",
+      "\\bclear your name\\b",
+      "\\brefundable (?:deposit|amount)\\b",
+      "\\bpay (?:a )?(?:fine|penalty|fee) to\\b",
+      "\\bto avoid (?:arrest|legal action|case)\\b",
+      "\\bsettle (?:the|this) (?:case|matter)\\b",
+      "\\bsecurity deposit\\b"
+    ]
+  },
+  {
+    "id": "text.app_lure",
+    "title": "App installation lure",
+    "family": "App lures",
+    "contribution": 22,
+    "evidence": "The message asks the reader to install an app, share the screen, or download a file.",
+    "explanation": "Fake apps and remote-access tools give scammers control of the device.",
+    "patterns": [
+      "\\binstall (?:this|the|our) app\\b",
+      "\\bdownload (?:this|the|our) (?:app|apk|file)\\b",
+      "\\.apk\\b",
+      "\\bsideload\\b",
+      "\\benable unknown sources\\b",
+      "\\banydesk\\b",
+      "\\bteamviewer\\b",
+      "\\bquick ?support\\b",
+      "\\bscreen ?shar(?:e|ing)\\b",
+      "\\bremote (?:access|support) app\\b"
+    ]
+  }
+]

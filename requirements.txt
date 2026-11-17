@@ -1,0 +1,17 @@
+# SafeClick dependencies.
+# Only packages actually imported by the project are listed here.
+
+# UI (ui/)
+streamlit>=1.67
+
+# Backend API (backend/app/)
+fastapi>=0.141
+uvicorn>=0.30
+pydantic>=2.13
+
+# Tests (tests/) - httpx is required by fastapi.testclient.TestClient
+pytest>=8
+httpx>=0.27
+
+# Optional AI assistance uses the Python standard library (urllib) against an
+# OpenAI-compatible endpoint, so no extra package is required.

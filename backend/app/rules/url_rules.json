@@ -1,0 +1,106 @@
+{
+  "indicators": {
+    "url.lookalike": {
+      "title": "Lookalike domain",
+      "family": "URL",
+      "contribution": 20,
+      "evidence": "The link's domain closely resembles a well-known brand.",
+      "explanation": "Lookalike domains imitate sites you already trust."
+    },
+    "url.shortener": {
+      "title": "URL shortener",
+      "family": "URL",
+      "contribution": 18,
+      "evidence": "The link uses a URL-shortening service.",
+      "explanation": "Shortened links hide the real destination until you click."
+    },
+    "url.punycode": {
+      "title": "Punycode or homoglyph domain",
+      "family": "URL",
+      "contribution": 20,
+      "evidence": "The link's host uses punycode encoding.",
+      "explanation": "Punycode can disguise a domain as a lookalike using similar-looking characters."
+    },
+    "url.credentials": {
+      "title": "Credentials embedded in the link",
+      "family": "URL",
+      "contribution": 22,
+      "evidence": "The link contains a username or password before the host.",
+      "explanation": "Embedded credentials are used to disguise the real destination."
+    },
+    "url.ip_host": {
+      "title": "Raw IP address host",
+      "family": "URL",
+      "contribution": 20,
+      "evidence": "The link points to a bare IP address instead of a domain name.",
+      "explanation": "Legitimate services rarely ask users to open a raw IP address."
+    },
+    "url.plain_http": {
+      "title": "Plain HTTP link",
+      "family": "URL",
+      "contribution": 12,
+      "evidence": "The link uses unencrypted HTTP instead of HTTPS.",
+      "explanation": "HTTP traffic is not encrypted and can be intercepted."
+    },
+    "url.subdomain": {
+      "title": "Misleading subdomain",
+      "family": "URL",
+      "contribution": 12,
+      "evidence": "The link uses an unusually deep subdomain.",
+      "explanation": "Attackers place trusted-looking names in subdomains to hide the real domain."
+    },
+    "url.suspicious_query": {
+      "title": "Suspicious query parameters",
+      "family": "URL",
+      "contribution": 12,
+      "evidence": "The link's query string contains a redirect or embedded address.",
+      "explanation": "Redirect parameters are often used to bounce users to a malicious site."
+    }
+  },
+  "shorteners": [
+    "bit.ly",
+    "tinyurl.com",
+    "t.co",
+    "goo.gl",
+    "is.gd",
+    "ow.ly",
+    "rebrand.ly",
+    "cutt.ly",
+    "rb.gy",
+    "shorturl.at",
+    "buff.ly",
+    "t.ly",
+    "bl.ink"
+  ],
+  "brands": {
+    "paypal": "paypal.com",
+    "apple": "apple.com",
+    "google": "google.com",
+    "microsoft": "microsoft.com",
+    "amazon": "amazon.com",
+    "netflix": "netflix.com",
+    "facebook": "facebook.com",
+    "instagram": "instagram.com",
+    "whatsapp": "whatsapp.com",
+    "linkedin": "linkedin.com",
+    "sbi": "onlinesbi.sbi",
+    "hdfc": "hdfcbank.com",
+    "icici": "icicibank.com",
+    "paytm": "paytm.com",
+    "phonepe": "phonepe.com",
+    "flipkart": "flipkart.com",
+    "irs": "irs.gov"
+  },
+  "suspicious_query_keys": [
+    "url",
+    "redirect",
+    "redirect_uri",
+    "next",
+    "continue",
+    "target",
+    "dest",
+    "destination",
+    "return",
+    "returnurl"
+  ]
+}
