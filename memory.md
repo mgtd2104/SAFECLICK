@@ -491,3 +491,20 @@ prioritized recommendations) inside the assistant chat bubble without crashing.
 
 **Result:** The UI now defaults to the live Render backend. Developers can override via
 `API_BASE_URL` for local development or staging environments.
+
+## 2026-11-17 — Update: Render Free-Tier Cold Start Handling
+
+**Goal:** Handle Render's free-tier spin-down delay where the first request can take 30–50 seconds.
+
+**Changed:**
+- `ui/api_client.py`:
+  - Increased `REQUEST_TIMEOUT_SECONDS` from 10 to 60 seconds
+  - Updated `_TIMEOUT_ERROR` message to explain the cold start: "The backend may be waking up from sleep (first request can take up to 60 seconds). Please try again."
+- `ui/streamlit_app.py`:
+  - Updated `st.spinner` message to: "Analyzing… (first request may take up to 60 seconds while the backend wakes up)"
+
+**Verification:**
+- `python -m pytest tests/test_ui_app.py -v` → **6 passed** in 2.58 s
+- `python -m pytest tests -q` → **77 passed**, 2 warnings (pre-existing `starlette`/`httpx` deprecations)
+
+**Result:** The UI now gracefully handles Render's free-tier cold start. Users see an informative spinner message instead of an immediate timeout error, and the 60-second timeout accommodates the 30–50 second spin-up delay.

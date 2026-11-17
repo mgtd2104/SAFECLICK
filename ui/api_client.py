@@ -21,10 +21,15 @@ API_BASE_URL = os.environ.get("API_BASE_URL", "https://safeclick-backend-82ii.on
 # Client-side input bound, mirroring the backend per-field limit.
 MAX_INPUT_CHARS = 10_000
 
-REQUEST_TIMEOUT_SECONDS = 10
+# Increased timeout to handle Render free-tier cold start (30-50s spin-up).
+REQUEST_TIMEOUT_SECONDS = 60
 
 _CONNECTION_ERROR = "Could not reach the analysis service. Check that it is running and try again."
-_TIMEOUT_ERROR = "The analysis service took too long to respond. Try again shortly."
+# Updated timeout message to reflect the longer wait for cold starts.
+_TIMEOUT_ERROR = (
+    "The analysis service took too long to respond. "
+    "The backend may be waking up from sleep (first request can take up to 60 seconds). Please try again."
+)
 _GENERIC_ERROR = "The analysis service returned an error. Please try again."
 
 # Friendly fallbacks for error codes that arrive without a usable message.

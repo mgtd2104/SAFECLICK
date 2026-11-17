@@ -149,7 +149,10 @@ if user_input:
 
     # Analyze with backend
     with st.chat_message("assistant"):
-        with st.spinner("Analyzing…"):
+        with st.spinner(
+            "Analyzing… (first request may take up to 60 seconds "
+            "while the backend wakes up)"
+        ):
             try:
                 result = api_client.analyze(text_value, url_value, use_ai=False)
                 # Render analysis inline
