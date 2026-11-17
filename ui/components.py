@@ -54,8 +54,33 @@ def recommendations_list(recommendations: list[str]) -> None:
         st.markdown(f"- {item}")
 
 
+def render_analysis_inline(result: dict[str, Any]) -> None:
+    """Render a full analysis result inline inside a chat bubble."""
+    score_card(result)
+
+    st.markdown("**Why this score**")
+    indicators = result.get("indicators") or []
+    if indicators:
+        for indicator in indicators:
+            indicator_card(indicator)
+    else:
+        st.info("No individual risk indicators were detected.", icon=":material/info:")
+
+    st.markdown("**What to do next**")
+    recommendations_list(result.get("recommendations") or [])
+
+    metadata = result.get("metadata") or {}
+    st.caption(
+        f"Detector: {metadata.get('detector_version', 'unknown')} · "
+        f"External check used: {'yes' if metadata.get('external_check_used') else 'no'}"
+    )
+
+
 def result_panel(result: dict[str, Any]) -> None:
-    """Render a full analysis result: score, indicators, advice, metadata."""
+    """Render a full analysis result: score, indicators, advice, metadata.
+
+    Kept for backward compatibility with the Learn page or other uses.
+    """
     score_card(result)
 
     st.subheader("Why this score")

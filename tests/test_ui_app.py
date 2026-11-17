@@ -51,24 +51,30 @@ def test_page_renders_without_error():
     assert "SafeClick" in at.title[0].value
 
 
-def test_empty_submit_warns_and_shows_no_result():
+def test_empty_chat_input_shows_no_analysis():
+    """Empty chat input should not trigger analysis."""
     at = AppTest.from_file(APP).run()
-    at.form_submit_button[0].click().run()
+    # Initial state - only welcome message
     assert not at.exception
-    assert at.warning
+    # Chat input is not a form, so we test by sending empty string via chat_input
+    # In AppTest, chat_input can be tested by setting its value
+    at.chat_input[0].set_value("").run()
+    assert not at.exception
+    # No analysis result should appear (no metric, no error)
     assert not at.metric
+    assert not at.error
 
 
 def test_successful_analysis_renders_the_api_result():
     with patch.object(api_client, "analyze", return_value=API_RESULT):
         at = AppTest.from_file(APP).run()
-        at.text_area(key="message").set_value("Dear customer, verify your account")
-        at.form_submit_button[0].click().run()
+        # Send a message via chat input
+        at.chat_input[0].set_value("Dear customer, verify your account").run()
 
     assert not at.exception
     # UI output matches the API response; the score is echoed, never recomputed.
     assert at.metric[0].value == "58/100"
-    assert at.session_state["result"]["category"] == "high"
+    assert at.session_state["messages"][-1]["analysis"]["category"] == "high"
     rendered = markdown_text(at)
     assert "Urgency pressure" in rendered
     assert "Do not reply or click yet." in rendered
@@ -80,12 +86,12 @@ def test_backend_error_is_shown_without_crashing():
 
     with patch.object(api_client, "analyze", side_effect=raise_error):
         at = AppTest.from_file(APP).run()
-        at.text_area(key="message").set_value("hello")
-        at.form_submit_button[0].click().run()
+        at.chat_input[0].set_value("hello").run()
 
     assert not at.exception
-    assert at.error
-    assert "Could not reach" in at.error[0].value
+    # Error is rendered as markdown in the assistant message, not st.error()
+    rendered = markdown_text(at)
+    assert "Could not reach" in rendered
     assert not at.metric
 
 
@@ -105,3 +111,18 @@ def test_learn_page_renders_guides_checklists_and_disclaimers():
 
     # Framing: the page must never imply the tool guarantees safety.
     assert "not proof that the content is safe" in rendered
+
+
+def test_clear_chat_button_resets_history():
+    """Clear chat button should reset message history to welcome message."""
+    with patch.object(api_client, "analyze", return_value=API_RESULT):
+        at = AppTest.from_file(APP).run()
+        at.chat_input[0].set_value("test message").run()
+        # Verify analysis was added (welcome + user + assistant with analysis = 3)
+        assert len(at.session_state["messages"]) == 3
+        # Click clear chat button
+        at.button[0].click().run()  # Clear chat button
+        # Should reset to just welcome message
+        assert len(at.session_state["messages"]) == 1
+        assert at.session_state["messages"][0]["role"] == "assistant"
+        assert "SafeClick" in at.session_state["messages"][0]["content"]
