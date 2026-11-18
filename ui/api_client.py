@@ -12,6 +12,7 @@ from __future__ import annotations
 
 import json
 import os
+import time
 import urllib.error
 import urllib.request
 
@@ -21,8 +22,15 @@ API_BASE_URL = os.environ.get("API_BASE_URL", "https://safeclick-backend-82ii.on
 # Client-side input bound, mirroring the backend per-field limit.
 MAX_INPUT_CHARS = 10_000
 
-# Increased timeout to handle Render free-tier cold start (30-50s spin-up).
-REQUEST_TIMEOUT_SECONDS = 60
+# Increased timeout to handle Render free-tier cold start (up to ~50s spin-up).
+REQUEST_TIMEOUT_SECONDS = 75
+
+# Retry configuration for cold-start handling.
+MAX_ATTEMPTS = 2
+RETRY_DELAY_SECONDS = 5
+
+# HTTP status codes that indicate the backend is still waking up.
+_RETRYABLE_STATUS_CODES = {502, 503, 504}
 
 _CONNECTION_ERROR = "Could not reach the analysis service. Check that it is running and try again."
 # Updated timeout message to reflect the longer wait for cold starts.
@@ -62,6 +70,9 @@ def analyze(text: str, url: str, use_ai: bool = False) -> dict:
 
     Raises AnalysisError with a safe, generic message so no internal detail
     reaches the UI or the user.
+
+    Retries once (2 attempts total) with a short delay to handle Render's
+    free-tier cold start (502/503/504 or connection errors during spin-up).
     """
     payload: dict = {"options": {"use_ai": use_ai}}
     if text:
@@ -75,12 +86,31 @@ def analyze(text: str, url: str, use_ai: bool = False) -> dict:
         headers={"Content-Type": "application/json"},
         method="POST",
     )
-    try:
-        with urllib.request.urlopen(request, timeout=REQUEST_TIMEOUT_SECONDS) as response:
-            return json.loads(response.read().decode("utf-8"))
-    except urllib.error.HTTPError as error:
-        raise AnalysisError(_server_message(error)) from error
-    except TimeoutError as error:
-        raise AnalysisError(_TIMEOUT_ERROR) from error
-    except (urllib.error.URLError, OSError, ValueError) as error:
-        raise AnalysisError(_CONNECTION_ERROR) from error
+
+    last_error: Exception | None = None
+    for attempt in range(1, MAX_ATTEMPTS + 1):
+        try:
+            with urllib.request.urlopen(request, timeout=REQUEST_TIMEOUT_SECONDS) as response:
+                return json.loads(response.read().decode("utf-8"))
+        except urllib.error.HTTPError as error:
+            last_error = error
+            if error.code in _RETRYABLE_STATUS_CODES and attempt < MAX_ATTEMPTS:
+                time.sleep(RETRY_DELAY_SECONDS)
+                continue
+            raise AnalysisError(_server_message(error)) from error
+        except TimeoutError as error:
+            last_error = error
+            if attempt < MAX_ATTEMPTS:
+                time.sleep(RETRY_DELAY_SECONDS)
+                continue
+            raise AnalysisError(_TIMEOUT_ERROR) from error
+        except (urllib.error.URLError, OSError, ValueError) as error:
+            last_error = error
+            if attempt < MAX_ATTEMPTS:
+                time.sleep(RETRY_DELAY_SECONDS)
+                continue
+            raise AnalysisError(_CONNECTION_ERROR) from error
+
+    # Should not reach here, but fallback for safety.
+    assert last_error is not None
+    raise AnalysisError(_CONNECTION_ERROR) from last_error
